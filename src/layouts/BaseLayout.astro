@@ -1,0 +1,205 @@
+---
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title = 'inkk dot', description = 'Book reviews, essays, photos, and notes by Hunter.' } = Astro.props;
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title === 'inkk dot' ? title : `${title} — inkk dot`}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  </head>
+  <body>
+    <header class="site-header fade-in">
+      <a href="/" class="logo">inkk dot</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">[menu]</button>
+    </header>
+
+    <nav class="menu-overlay" id="menuOverlay" aria-hidden="true">
+      <button class="menu-close" id="menuClose" aria-label="Close menu">[close]</button>
+      <ul class="menu-links">
+        <li><a href="/" class:list={[{ active: currentPath === '/' }]}>Home</a></li>
+        <li><a href="/blog" class:list={[{ active: currentPath.startsWith('/blog') }]}>Blog</a></li>
+        <li><a href="/photos" class:list={[{ active: currentPath === '/photos' || currentPath === '/photos/' }]}>Photos</a></li>
+        <li><a href="/about" class:list={[{ active: currentPath === '/about' || currentPath === '/about/' }]}>About</a></li>
+      </ul>
+    </nav>
+
+    <main class="site-main fade-in stagger-2">
+      <slot />
+    </main>
+
+    <footer class="site-footer fade-in stagger-4">
+      <p class="mono small muted">&copy; {new Date().getFullYear()} Hunter</p>
+    </footer>
+
+    <script>
+      const toggle = document.getElementById('menuToggle');
+      const close = document.getElementById('menuClose');
+      const overlay = document.getElementById('menuOverlay');
+
+      function openMenu() {
+        overlay?.classList.add('open');
+        overlay?.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeMenu() {
+        overlay?.classList.remove('open');
+        overlay?.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      toggle?.addEventListener('click', openMenu);
+      close?.addEventListener('click', closeMenu);
+
+      overlay?.addEventListener('click', (e) => {
+        if (e.target === overlay) closeMenu();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+      });
+    </script>
+
+    <style is:global>
+      @import '../styles/global.css';
+    </style>
+
+    <style>
+      .site-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: var(--page-padding);
+        padding-bottom: 0;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .logo {
+        font-family: var(--font-mono);
+        font-size: 1rem;
+        font-weight: 300;
+        letter-spacing: 0.25em;
+        color: var(--accent);
+        text-transform: lowercase;
+        border-bottom: none;
+      }
+
+      .logo:hover {
+        border-bottom: none;
+        opacity: 0.7;
+      }
+
+      .menu-toggle {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0.25rem;
+        transition: color 0.2s ease;
+      }
+
+      .menu-toggle:hover {
+        color: var(--accent);
+      }
+
+      /* ---- Overlay Nav ---- */
+
+      .menu-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        background: var(--accent-deep);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+
+      .menu-overlay.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .menu-close {
+        position: absolute;
+        top: clamp(1.5rem, 5vw, 4rem);
+        right: clamp(1.5rem, 5vw, 4rem);
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--accent-pale);
+        background: none;
+        border: none;
+        cursor: pointer;
+        transition: color 0.2s ease;
+      }
+
+      .menu-close:hover {
+        color: #fff;
+      }
+
+      .menu-links {
+        list-style: none;
+        text-align: center;
+      }
+
+      .menu-links li {
+        margin: 1.5rem 0;
+      }
+
+      .menu-links a {
+        font-family: var(--font-mono);
+        font-size: 1.4rem;
+        font-weight: 300;
+        letter-spacing: 0.15em;
+        color: var(--accent-pale);
+        text-transform: lowercase;
+        border-bottom: none;
+        transition: color 0.2s ease;
+      }
+
+      .menu-links a:hover,
+      .menu-links a.active {
+        color: #fff;
+      }
+
+      .menu-links a.active {
+        border-bottom: 1px solid var(--accent-light);
+      }
+
+      /* ---- Main ---- */
+
+      .site-main {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 3rem var(--page-padding) 4rem;
+        min-height: 60vh;
+      }
+
+      /* ---- Footer ---- */
+
+      .site-footer {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 2rem var(--page-padding);
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </body>
+</html>

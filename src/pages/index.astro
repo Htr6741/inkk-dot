@@ -1,0 +1,134 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 3);
+
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+---
+
+<BaseLayout>
+  <section class="hero">
+    <h1 class="hero-title">inkk dot</h1>
+    <p class="hero-tagline">Book reviews, essays, photos, and notes by Hunter.</p>
+  </section>
+
+  <section class="recent">
+    <h2 class="section-label">Recent</h2>
+    <ul class="post-list">
+      {posts.map((post, i) => (
+        <li class={`post-item fade-in stagger-${i + 3}`}>
+          <a href={`/blog/${post.id}`} class="post-link">
+            <span class="post-title">{post.data.title}</span>
+            <span class="post-meta">
+              <span class="post-date">{formatDate(post.data.date)}</span>
+              <span class="post-category">{post.data.category}</span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <a href="/blog" class="view-all mono small">all posts &rarr;</a>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding: 4rem 0 3rem;
+  }
+
+  .hero-title {
+    font-family: var(--font-mono);
+    font-size: clamp(2.2rem, 6vw, 3.5rem);
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-tagline {
+    font-family: var(--font-serif);
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-style: italic;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .post-list {
+    list-style: none;
+  }
+
+  .post-item {
+    margin-bottom: 0;
+  }
+
+  .post-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border);
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .post-link:hover {
+    border-bottom-color: var(--accent);
+  }
+
+  .post-title {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 400;
+    color: var(--text);
+  }
+
+  .post-link:hover .post-title {
+    color: var(--accent);
+  }
+
+  .post-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+  }
+
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  .post-category {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--accent-light);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .view-all {
+    display: inline-block;
+    margin-top: 1.5rem;
+    color: var(--accent-light);
+  }
+
+  .view-all:hover {
+    color: var(--accent);
+  }
+</style>

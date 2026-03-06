@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Get photo posts from blog collection
+const photoPosts = (await getCollection('blog', ({ data }) => data.category === 'photo'))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Photos">
+  <h1 class="page-title">Photos</h1>
+  <p class="page-desc muted">Moments, places, light.</p>
+
+  {photoPosts.length > 0 ? (
+    <div class="photo-grid">
+      {photoPosts.map((post) => (
+        <a href={`/blog/${post.id}`} class="photo-card">
+          {post.data.image && <img src={post.data.image} alt={post.data.title} loading="lazy" />}
+          <span class="photo-caption mono small">{post.data.title}</span>
+        </a>
+      ))}
+    </div>
+  ) : (
+    <div class="empty-state">
+      <p class="mono muted">Photos coming soon.</p>
+      <p class="small muted" style="margin-top: 0.5rem;">Upload photos to <code>src/content/blog/photos/</code> and create posts with <code>category: photo</code>.</p>
+    </div>
+  )}
+</BaseLayout>
+
+<style>
+  .page-title {
+    font-size: 1.6rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .page-desc {
+    font-size: 0.9rem;
+    font-style: italic;
+    margin-bottom: 3rem;
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .photo-card {
+    display: block;
+    border-bottom: none;
+    overflow: hidden;
+  }
+
+  .photo-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 3px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+    filter: grayscale(15%) contrast(1.02);
+  }
+
+  .photo-card:hover img {
+    transform: scale(1.02);
+    filter: grayscale(0%) contrast(1.05);
+  }
+
+  .photo-caption {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+  }
+
+  .photo-card:hover .photo-caption {
+    color: var(--accent);
+  }
+
+  .empty-state {
+    padding: 3rem 0;
+  }
+
+  .empty-state code {
+    font-family: var(--font-mono);
+    font-size: 0.8em;
+    background: var(--bg-elevated);
+    padding: 0.15em 0.4em;
+    border-radius: 3px;
+  }
+</style>

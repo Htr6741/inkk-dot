@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About">
+  <article class="about prose">
+    <h1>About</h1>
+
+    <p>I'm Hunter. I read a lot, walk without purpose, and occasionally write about it here.</p>
+
+    <p>This is <strong>inkk dot</strong> — a quiet corner for book reviews, personal essays, photographs, and the occasional technical note. No newsletter, no analytics, no engagement metrics. Just words and images.</p>
+
+    <h2>What I Write About</h2>
+
+    <p>Mostly books. I'm drawn to fiction that takes risks, non-fiction that changes how I see things, and the odd technical deep-dive when something genuinely excites me. I write essays when a thought won't leave me alone.</p>
+
+    <h2>Elsewhere</h2>
+
+    <p>You can find me on <a href="#">GitHub</a> and occasionally on <a href="#">Mastodon</a>. Or don't — I'm not going anywhere.</p>
+
+    <h2>Colophon</h2>
+
+    <p class="colophon small muted">Built with <a href="https://astro.build">Astro</a>. Set in JetBrains Mono and Lora. Hosted on Cloudflare Pages. No JavaScript frameworks were harmed in the making of this site.</p>
+  </article>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: var(--content-width);
+  }
+
+  .about h1 {
+    font-size: 1.6rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .colophon {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+</style>
